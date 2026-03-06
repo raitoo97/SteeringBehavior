@@ -4,7 +4,7 @@ public abstract class Agent : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float _maxSpeed; // Velocidad maxima a la que se puede mover el agente
-    [SerializeField][Range(0,1)]private float _maxForce; // Fuerza maxima que se puede aplicar al agente para cambiar su velocidad
+    [SerializeField][Range(0,1)]private float _maxForce; // Fuerza maxima que se puede aplicar al agente para cambiar su velocidad(que tan brusco rota)
     [SerializeField] protected Transform _target;
     //Vectores de direccion y fuerza
     private Vector3 _velocity; // Direccion hacia la que se mueve el agente
@@ -17,12 +17,13 @@ public abstract class Agent : MonoBehaviour
         transform.position += _velocity * Time.deltaTime; // Mover el agente en la direccion de su velocidad
         // Guardamos la posicion del agente en la historia para dibujar su trayectoria (solo debug)
         _history.Add(transform.position);
-        if (_history.Count > 100)
+        if (_history.Count > 500)
             _history.RemoveAt(0);
     }
     public void AddForce(Vector3 direction)
     {
         _velocity = Vector3.ClampMagnitude(_velocity + direction, _maxSpeed); // Sumamos una direccion a la direccion actual del agente y limitamos su velocidad a la maxima.
+        _velocity.y = 0; // Mantenemos el movimiento en el plano horizontal (y=0) para evitar que el agente se eleve o hunda.
     }
     public Vector3 Seek(Vector3 target)
     {
