@@ -33,6 +33,14 @@ public abstract class Agent : MonoBehaviour
         _steer = Vector3.ClampMagnitude(_steer, _maxForce); // Limitamos la fuerza de direccion a la fuerza maxima la cual el agente puede cambiar su direccion.
         return _steer; // Devolvemos la fuerza de direccion que se debe aplicar al agente para moverlo hacia el objetivo.
     }
+    public Vector3 Flee(Vector3 target)
+    {
+        _desired = transform.position - target; // Direccion deseada alejandose del objetivo
+        _desired = _desired.normalized * _maxSpeed; // Normalizamos la direccion deseada y la multiplicamos por la velocidad maxima para obtener la velocidad deseada.
+        _steer = _desired - _velocity; // Calculamos la fuerza de direccion restando la velocidad actual del agente a la velocidad deseada.
+        _steer = Vector3.ClampMagnitude(_steer, _maxForce); // Limitamos la fuerza de direccion a la fuerza maxima la cual el agente puede cambiar su direccion.
+        return _steer; // Devolvemos la fuerza de direccion que se debe aplicar al agente para alejarse del objetivo.
+    }
     private void OnDrawGizmos()//Dibujamos la velocidad, direccion deseada y trayectoria del agente en el editor para debuggear su comportamiento.
     {
         if (_target == null) return;
